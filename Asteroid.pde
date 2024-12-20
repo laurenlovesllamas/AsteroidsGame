@@ -1,7 +1,7 @@
 class Asteroid extends Floater {
   float turnSpeed;  // Variable for asteroid turning speed
 
-  Asteroid() {
+  public Asteroid() {
     myCenterX = random(width);
     myCenterY = random(height);
     myDirectionX = random(-1, 1);
@@ -23,24 +23,6 @@ class Asteroid extends Floater {
   // Move the asteroid and apply the turning speed
   public void move() {
     super.move();
-    rotate(turnSpeed);  // Apply the turning speed to rotate the asteroid
-  }
-
-  // Show the asteroid as a random irregular shape
-  public void show() {
-    fill(myColor);
-    stroke(255);
-    pushMatrix();
-    translate(myCenterX, myCenterY);
-    // rotate(radians(myPointDirection));
-    beginShape();
-    for (int i = 0; i < corners; i++) {
-      float angle = radians(myPointDirection);
-      float newx = (xCorners[i] * cos(angle)) - (yCorners[i] * sin(angle));
-      float newy = (xCorners[i] * sin(angle)) + (yCorners[i] * cos(angle));
-      vertex(newx, newy); 
-    }
-    endShape(CLOSE);
-    popMatrix();
+    turn((int)turnSpeed);  // Apply the turning speed to rotate the asteroid
   }
 }
