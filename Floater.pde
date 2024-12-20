@@ -7,7 +7,7 @@ abstract class Floater {
   protected int myColor;
 
   // Rotate the object
-  public void rotate(float degrees) {
+  public void turn(float degrees) {
     myPointDirection += degrees;
   }
 
@@ -36,7 +36,7 @@ abstract class Floater {
     stroke(255);
     pushMatrix();
     translate(myCenterX, myCenterY);
-    // rotate(radians(myPointDirection));
+    rotate(radians(myPointDirection));
     beginShape();
      for (int i = 0; i < corners; i++) {
       vertex(xCorners[i], yCorners[i]);
