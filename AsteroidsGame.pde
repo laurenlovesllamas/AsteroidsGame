@@ -63,9 +63,9 @@ void draw() {
 
 void keyPressed() {
   if (key == 'a'){
-    mySpaceship.rotate(-5);  // Turn left
+    mySpaceship.turn(-5);  // Turn left
   } else if (key == 'd') {
-    mySpaceship.rotate(5);  // Turn right
+    mySpaceship.turn(5);  // Turn right
   } else if (key == 'w') {
     mySpaceship.accelerate(0.1);  // Accelerate forward
   } else if (key == ' ') {  // Spacebar to shoot
