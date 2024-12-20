@@ -1,35 +1,75 @@
+// Declare the spaceship, asteroids, and bullets
 Spaceship mySpaceship;
+ArrayList<Asteroid> asteroids = new ArrayList<Asteroid>();
+ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 Star[] stars;
 
 void setup() {
   size(800, 600);  
-  mySpaceship = new Spaceship();  
+  mySpaceship = new Spaceship();  // Initialize spaceship
 
   // Initialize stars
   stars = new Star[100];
   for (int i = 0; i < stars.length; i++) {
     stars[i] = new Star();
   }
+
+  // Create some initial asteroids
+  for (int i = 0; i < 5; i++) {
+    asteroids.add(new Asteroid());
+  }
 }
 
 void draw() {
-  background(0);  
+  background(0);  // Clear the screen
   
-for (int i = 0; i < stars.length; i++) {
+  // Draw and move stars
+  for (int i = 0; i < stars.length; i++) {
     stars[i].show();
-}
-  
+  }
+
   mySpaceship.move();
   mySpaceship.show();
+
+  // Draw and move bullets
+  for (int i = bullets.size() - 1; i >= 0; i--) {
+    Bullet bullet = bullets.get(i);
+    bullet.move();
+    bullet.show();
+
+    // Check for collisions with asteroids
+    for (int j = asteroids.size() - 1; j >= 0; j--) {
+      Asteroid asteroid = asteroids.get(j);
+      if (dist(bullet.myCenterX, bullet.myCenterY, asteroid.myCenterX, asteroid.myCenterY) < 15) {
+        asteroids.remove(j);
+        bullets.remove(i);
+        break;  // Stop checking once we remove the asteroid and bullet
+      }
+    }
+  }
+
+  // Move and display asteroids
+  for (int i = asteroids.size() - 1; i >= 0; i--) {
+    Asteroid asteroid = asteroids.get(i);
+    asteroid.move();
+    asteroid.show();
+
+    // Check for collision with spaceship
+    if (dist(mySpaceship.myCenterX, mySpaceship.myCenterY, asteroid.myCenterX, asteroid.myCenterY) < 20) {
+      asteroids.remove(i);  // Remove asteroid if it collides with spaceship
+    }
+  }
 }
 
 void keyPressed() {
-  if (key == 'a') {
+  if (key == 'a'){
     mySpaceship.rotate(-5);  // Turn left
   } else if (key == 'd') {
-    mySpaceship.rotate(5);   // Turn right
+    mySpaceship.rotate(5);  // Turn right
   } else if (key == 'w') {
     mySpaceship.accelerate(0.1);  // Accelerate forward
+  } else if (key == ' ') {  // Spacebar to shoot
+    bullets.add(new Bullet(mySpaceship));  // Create a new bullet
   } else if (key == 'h') {
     // Hyperspace: teleport to random position and direction
     mySpaceship.myCenterX = random(width);
@@ -37,82 +77,5 @@ void keyPressed() {
     mySpaceship.myDirectionX = 0;
     mySpaceship.myDirectionY = 0;
     mySpaceship.myPointDirection = random(360);
-  }
-}
-
-class Spaceship extends Floater {
-  Spaceship() {
-    myCenterX = width / 2;
-    myCenterY = height / 2;
-
-    myDirectionX = 0;
-    myDirectionY = 0;
-
-    myPointDirection = 0;
-
-    // Shape/appearance
-    myColor = color(255, 255, 255); 
-    corners = 3; 
-
-    // Define spaceship shape
-    xCorners = new float[] { 0, -10, 10 };
-    yCorners = new float[] { -15, 10, 10 };
-  }
-}
-
-abstract class Floater {
-  protected float myCenterX, myCenterY;
-  protected float myDirectionX, myDirectionY;
-  protected float myPointDirection;
-
-  protected int corners;
-  protected float[] xCorners, yCorners;
-  protected int myColor;
-
-  public void rotate(float degrees) {
-    myPointDirection += degrees;
-  }
-
-  public void accelerate(float amount) {
-    float angle = radians(myPointDirection);
-    myDirectionX += cos(angle) * amount;
-    myDirectionY += sin(angle) * amount;
-  }
-
-  public void move() {
-    myCenterX += myDirectionX;
-    myCenterY += myDirectionY;
-    
-    if (myCenterX > width) myCenterX = 0;
-    if (myCenterX < 0) myCenterX = width;
-    if (myCenterY > height) myCenterY = 0;
-    if (myCenterY < 0) myCenterY = height;
-  }
-
-  public void show() {
-    fill(myColor);
-    stroke(255);
-    pushMatrix();
-    translate(myCenterX, myCenterY);
-    rotate(radians(myPointDirection));
-    beginShape();
-    for (int i = 0; i < corners; i++) {
-      vertex(xCorners[i], yCorners[i]);
-    }
-    endShape(CLOSE);
-    popMatrix();
-  }
-}
-class Star {
-  float x, y;
-
-  Star() {
-    x = random(width);
-    y = random(height);
-  }
-
-  void show() {
-    stroke(255);  
-    point(x, y);
   }
 }
